@@ -2,7 +2,7 @@ import Note from "../models/Note.js";
 
 export async function getAllNotes (_,res)  {
     try {
-        const notes = (await Note.find()).toSorted({createdAt: -1}); // sort by createdAt descending
+        const notes = await Note.find().sort({ createdAt: -1 }); // sort by createdAt descending
         res.status(200).json(notes);
     }
     catch (error) {
@@ -15,10 +15,12 @@ export async function getNotebyId (req,res) {
    try {
     const note = await Note.findById(req.params.id);
     if (!note) return res.status(404).json({message: "Note not found"});
+
+    return res.status(200).json(note);
    }
    catch (error) {
     console.log("Error fetching note by ID:", error);
-    res.status(500).json({message: "Internal Server Error"});
+    return res.status(500).json({message: "Internal Server Error"});
    }
 }
 
@@ -33,6 +35,7 @@ export async function createNote (req,res) {
    }
    catch (error) {
     console.log("Error creating note:", error);
+    res.status(500).json({message: "Internal Server Error"});
    }
 }
 
